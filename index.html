@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>藏在城市里 — 只有本地人才知道的好去处</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600&family=Noto+Sans+SC:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+:root{--cream:#F5F0E8;--paper:#EDE8DC;--ink:#1C1A16;--ink-light:#4A4640;--ink-faint:#9A948A;--accent:#8B4513;--accent-light:#C4713A;--accent-pale:#F0E0CC;--green:#3D6B4F;--green-pale:#D4E8DC;--line:rgba(28,26,22,0.12);}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--cream);color:var(--ink);font-family:'Noto Sans SC',sans-serif;font-weight:300;min-height:100vh;position:relative;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;background-image:repeating-linear-gradient(0deg,transparent,transparent 39px,var(--line) 39px,var(--line) 40px),repeating-linear-gradient(90deg,transparent,transparent 39px,var(--line) 39px,var(--line) 40px);pointer-events:none;z-index:0;}
+.container{max-width:720px;margin:0 auto;padding:0 1.5rem;position:relative;z-index:1;}
+header{padding:3rem 0 2rem;text-align:center;border-bottom:1px solid var(--line);margin-bottom:2.5rem;}
+.logo-mark{display:inline-block;width:48px;height:48px;border:2px solid var(--accent);border-radius:50%;line-height:44px;font-size:20px;color:var(--accent);margin-bottom:1rem;font-family:'Noto Serif SC',serif;}
+h1{font-family:'Noto Serif SC',serif;font-size:clamp(24px,5vw,36px);font-weight:600;letter-spacing:0.08em;margin-bottom:0.5rem;}
+.tagline{font-size:13px;color:var(--ink-faint);letter-spacing:0.15em;}
+.form-card{background:var(--paper);border:1px solid var(--line);border-radius:4px;padding:2rem;margin-bottom:2rem;position:relative;}
+.form-card::before{content:'';position:absolute;top:6px;left:6px;right:-6px;bottom:-6px;border:1px solid var(--line);border-radius:4px;z-index:-1;}
+.field-label{font-size:11px;font-weight:500;color:var(--ink-faint);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:8px;display:block;}
+textarea{width:100%;background:var(--cream);border:1px solid var(--line);border-radius:2px;padding:14px 16px;font-size:15px;font-family:'Noto Sans SC',sans-serif;font-weight:300;color:var(--ink);resize:none;min-height:90px;line-height:1.7;margin-bottom:1.25rem;transition:border-color .2s;}
+textarea:focus{outline:none;border-color:var(--accent-light);}
+textarea::placeholder{color:var(--ink-faint);}
+.row-fields{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem;}
+.field-input{width:100%;background:var(--cream);border:1px solid var(--line);border-radius:2px;padding:10px 12px;font-size:14px;font-family:'Noto Sans SC',sans-serif;color:var(--ink);}
+.field-input:focus{outline:none;border-color:var(--accent-light);}
+.mood-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:1.5rem;}
+.mood-tag{padding:5px 12px;background:transparent;border:1px solid var(--line);border-radius:2px;font-size:12px;color:var(--ink-light);cursor:pointer;font-family:'Noto Sans SC',sans-serif;transition:all .15s;}
+.mood-tag:hover,.mood-tag.active{background:var(--accent-pale);border-color:var(--accent-light);color:var(--accent);}
+.submit-btn{width:100%;padding:14px;background:var(--ink);color:var(--cream);border:none;border-radius:2px;font-size:14px;font-family:'Noto Serif SC',serif;font-weight:600;letter-spacing:0.2em;cursor:pointer;transition:all .2s;}
+.submit-btn:hover:not(:disabled){background:var(--accent);}
+.submit-btn:disabled{opacity:.5;cursor:not-allowed;}
+#loading{display:none;text-align:center;padding:3rem 0;}
+.loading-dots{display:flex;justify-content:center;gap:6px;margin-bottom:1rem;}
+.loading-dots span{width:6px;height:6px;background:var(--accent);border-radius:50%;animation:dotpulse 1.4s infinite ease-in-out;}
+.loading-dots span:nth-child(2){animation-delay:.2s;}
+.loading-dots span:nth-child(3){animation-delay:.4s;}
+@keyframes dotpulse{0%,80%,100%{transform:scale(0.6);opacity:.4;}40%{transform:scale(1);opacity:1;}}
+.loading-text{font-size:13px;color:var(--ink-faint);letter-spacing:0.1em;}
+#results{display:none;}
+.mood-response{background:var(--accent-pale);border-left:3px solid var(--accent);padding:1rem 1.25rem;margin-bottom:2rem;border-radius:0 2px 2px 0;}
+.mood-response p{font-family:'Noto Serif SC',serif;font-size:14px;color:var(--accent);line-height:1.8;}
+.results-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;}
+.results-title{font-size:11px;color:var(--ink-faint);letter-spacing:0.15em;text-transform:uppercase;}
+.again-btn{font-size:12px;color:var(--accent);background:none;border:none;cursor:pointer;font-family:'Noto Sans SC',sans-serif;text-decoration:underline;text-underline-offset:3px;}
+.place-card{background:var(--paper);border:1px solid var(--line);border-radius:4px;padding:1.5rem;margin-bottom:1rem;position:relative;animation:fadeup .4s ease-out both;}
+.place-card:nth-child(2){animation-delay:.1s;}
+.place-card:nth-child(3){animation-delay:.2s;}
+@keyframes fadeup{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+.place-num{position:absolute;top:1.5rem;right:1.5rem;font-family:'Noto Serif SC',serif;font-size:32px;color:var(--line);font-weight:600;line-height:1;}
+.place-type{font-size:11px;color:var(--ink-faint);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:6px;}
+.place-name{font-family:'Noto Serif SC',serif;font-size:20px;font-weight:600;margin-bottom:6px;line-height:1.3;}
+.place-vibe{font-size:13px;color:var(--accent-light);font-style:italic;margin-bottom:1rem;line-height:1.6;}
+.place-story{font-size:14px;color:var(--ink-light);line-height:1.9;margin-bottom:1rem;border-top:1px solid var(--line);padding-top:1rem;}
+.meta-chip{display:inline-block;font-size:12px;padding:4px 10px;background:var(--cream);border:1px solid var(--line);border-radius:2px;color:var(--ink-light);margin-bottom:8px;}
+.place-tip{font-size:12px;color:var(--green);background:var(--green-pale);padding:8px 12px;border-radius:2px;margin-bottom:8px;line-height:1.6;}
+.place-match{font-size:12px;color:var(--ink-faint);font-style:italic;}
+.share-section{text-align:center;padding:2rem 0 3rem;border-top:1px solid var(--line);margin-top:2rem;}
+.share-text{font-size:13px;color:var(--ink-faint);margin-bottom:1rem;}
+.share-btn{display:inline-flex;align-items:center;gap:6px;padding:9px 20px;background:transparent;border:1px solid var(--ink);border-radius:2px;font-size:13px;font-family:'Noto Sans SC',sans-serif;color:var(--ink);cursor:pointer;transition:all .15s;margin:0 4px;}
+.share-btn:hover{background:var(--ink);color:var(--cream);}
+footer{text-align:center;padding:1.5rem;font-size:12px;color:var(--ink-faint);border-top:1px solid var(--line);letter-spacing:0.08em;}
+@media(max-width:500px){.row-fields{grid-template-columns:1fr;}.form-card{padding:1.25rem;}header{padding:2rem 0 1.5rem;}}
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <div class="logo-mark">藏</div>
+    <h1>藏在城市里</h1>
+    <p class="tagline">只有本地人才知道的好去处</p>
+  </header>
+
+  <div class="form-card" id="form-section">
+    <label class="field-label">你现在是什么心情，或者想找什么感觉？</label>
+    <textarea id="mood-input" placeholder="比如：失眠了，想找个安静的地方发呆&#10;或者：跟朋友一起，想找个不贵但有意思的地方吃饭"></textarea>
+    <label class="field-label">快速选一个</label>
+    <div class="mood-tags">
+      <button class="mood-tag" onclick="pickMood(this,'一个人，需要安静，发发呆')">一个人发呆</button>
+      <button class="mood-tag" onclick="pickMood(this,'失眠睡不着，深夜想出去走走')">深夜失眠</button>
+      <button class="mood-tag" onclick="pickMood(this,'心情不好，需要治愈一下')">心情不好</button>
+      <button class="mood-tag" onclick="pickMood(this,'约会，想找个有氛围不俗气的地方')">约会氛围</button>
+      <button class="mood-tag" onclick="pickMood(this,'跟朋友聊天，想找个不吵能坐很久的地方')">朋友聊天</button>
+      <button class="mood-tag" onclick="pickMood(this,'想看书，需要安静舒服的环境')">看书读书</button>
+      <button class="mood-tag" onclick="pickMood(this,'下班了，想一个人吃顿好的犒劳自己')">一个人吃饭</button>
+      <button class="mood-tag" onclick="pickMood(this,'想拍照，但不想去网红地拍')">拍照不网红</button>
+    </div>
+    <div class="row-fields">
+      <div>
+        <label class="field-label">城市</label>
+        <input class="field-input" id="city-input" type="text" placeholder="上海 / 北京 / 成都…"/>
+      </div>
+      <div>
+        <label class="field-label">偏好类型</label>
+        <select class="field-input" id="type-input">
+          <option value="">不限</option>
+          <option value="咖啡馆/茶馆">咖啡馆 / 茶馆</option>
+          <option value="小馆子/餐厅">小馆子 / 餐厅</option>
+          <option value="公园/户外">公园 / 户外</option>
+          <option value="书店/图书馆">书店 / 图书馆</option>
+          <option value="酒吧/小酒馆">酒吧 / 小酒馆</option>
+          <option value="街道/社区">街道 / 社区</option>
+        </select>
+      </div>
+    </div>
+    <button class="submit-btn" id="submit-btn" onclick="getRecommend()">帮我找找</button>
+  </div>
+
+  <div id="loading">
+    <div class="loading-dots"><span></span><span></span><span></span></div>
+    <p class="loading-text">正在翻找城市里的藏宝图…</p>
+  </div>
+
+  <div id="results">
+    <div class="mood-response" id="mood-response"></div>
+    <div class="results-header">
+      <span class="results-title">为你找到 3 个地方</span>
+      <button class="again-btn" onclick="resetForm()">重新找</button>
+    </div>
+    <div id="places-list"></div>
+    <div class="share-section">
+      <p class="share-text">觉得好用？分享给还在迷茫的朋友</p>
+      <button class="share-btn" onclick="copyLink()">复制链接</button>
+    </div>
+  </div>
+
+  <footer>© 2026 藏在城市里 · 不是网红，是故事</footer>
+</div>
+
+<script>
+function pickMood(el,val){
+  document.querySelectorAll('.mood-tag').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('mood-input').value=val;
+}
+
+async function getRecommend(){
+  const mood=document.getElementById('mood-input').value.trim();
+  const city=document.getElementById('city-input').value.trim();
+  const type=document.getElementById('type-input').value;
+  if(!mood){document.getElementById('mood-input').focus();return;}
+  document.getElementById('submit-btn').disabled=true;
+  document.getElementById('form-section').style.display='none';
+  document.getElementById('loading').style.display='block';
+  document.getElementById('results').style.display='none';
+  try{
+    const res=await fetch('/api/recommend',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({mood,city,type})
+    });
+    const data=await res.json();
+    if(data.error)throw new Error(data.error);
+    renderResults(data);
+  }catch(err){
+    document.getElementById('form-section').style.display='block';
+    document.getElementById('loading').style.display='none';
+    alert('出错了：'+err.message);
+  }
+  document.getElementById('submit-btn').disabled=false;
+}
+
+function renderResults(data){
+  document.getElementById('loading').style.display='none';
+  document.getElementById('results').style.display='block';
+  document.getElementById('mood-response').innerHTML=`<p>${data.moodRead||''}</p>`;
+  const list=document.getElementById('places-list');
+  list.innerHTML='';
+  (data.places||[]).forEach((p,i)=>{
+    list.innerHTML+=`
+      <div class="place-card">
+        <div class="place-num">0${i+1}</div>
+        <div class="place-type">${p.type||''}</div>
+        <div class="place-name">${p.name||''}</div>
+        <div class="place-vibe">${p.vibe||''}</div>
+        <div class="place-story">${p.story||''}</div>
+        <span class="meta-chip">🕐 ${p.bestTime||''}</span>
+        ${p.tip?`<div class="place-tip">💡 本地小贴士：${p.tip}</div>`:''}
+        ${p.matchReason?`<div class="place-match">✦ ${p.matchReason}</div>`:''}
+      </div>`;
+  });
+}
+
+function resetForm(){
+  document.getElementById('results').style.display='none';
+  document.getElementById('form-section').style.display='block';
+  document.getElementById('mood-input').value='';
+  document.querySelectorAll('.mood-tag').forEach(t=>t.classList.remove('active'));
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function copyLink(){
+  navigator.clipboard.writeText(window.location.href).then(()=>alert('链接已复制！'));
+}
+</script>
+</body>
+</html>
